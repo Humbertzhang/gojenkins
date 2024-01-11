@@ -228,25 +228,7 @@ func (n *Node) GetLogText(ctx context.Context) (string, error) {
 		return "", err
 	}
 
-	qr := map[string]string{"start": "0"}
-	_, err = n.Jenkins.Requester.GetJSON(ctx, n.Base+"/logText/progressiveHtml/", &log, qr)
-	if err != nil {
-		return "", nil
-	}
-
-	return log, nil
-}
-
-func (n *Node) GetLogTextBugFix(ctx context.Context) (string, error) {
-	var log string
-
-	_, err := n.Jenkins.Requester.Post(ctx, n.Base+"/log", nil, nil, nil)
-	if err != nil {
-		return "", err
-	}
-
-	qr := map[string]string{"start": "0"}
-	_, err = n.Jenkins.Requester.GetJSON(ctx, n.Base+"/logText/progressiveHtml/", &log, qr)
+	_, err = n.Jenkins.Requester.Get(ctx, n.Base+"/logText/progressiveHtml/", &log, nil)
 	if err != nil {
 		return "", err
 	}
