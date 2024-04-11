@@ -187,6 +187,27 @@ func (n *Node) ToggleTemporarilyOffline(ctx context.Context, options ...interfac
 	return true, nil
 }
 
+func (n *Node) ChangeOfflineCause(ctx context.Context, options ...interface{}) (bool, error) {
+	if !n.Raw.TemporarilyOffline {
+		return false, errors.New("node is not offline, can't change offline cause")
+	}
+
+	if len(options) < 0 {
+		return false, errors.New("no offline cause provided")
+	}
+	newOfflineMsg := options[0].(string)
+	qr := map[string]string{
+		"offlineMessage": newOfflineMsg,
+		"Submit":         "",
+	}
+	_, err := n.Jenkins.Requester.Post(ctx, n.Base+"/changeOfflineCause", nil, nil, qr)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
 func (n *Node) Poll(ctx context.Context) (int, error) {
 	response, err := n.Jenkins.Requester.GetJSON(ctx, n.Base, n.Raw, nil)
 	if err != nil {
