@@ -256,3 +256,15 @@ func (n *Node) GetLogText(ctx context.Context) (string, error) {
 
 	return log, nil
 }
+
+func (n *Node) GetDescription(ctx context.Context) string {
+	return n.Raw.Description
+}
+
+func (n *Node) SubmitDescription(ctx context.Context, description string) error {
+	_, err := n.Jenkins.Requester.Post(ctx, n.Base+"/submitDescription", nil, nil, map[string]string{"description": description})
+	if err != nil {
+		return err
+	}
+	return nil
+}
